@@ -18,21 +18,25 @@ namespace CaseKata.Controllers
         }
         
         [HttpGet("{docketId}")]
-        public ActionResult<IList<CaseFile>> Get(int docketId)
+        public ActionResult<IList<CaseFile>> RetrieveByDocketId(int docketId)
         {
             var caseFiles = _context.CaseFiles
                 .Where(c => c.DocketId == docketId)
                 .ToList();
+            
             if (caseFiles.Count == 0)
             {
                 return NotFound();
             }
+            
             return caseFiles;
         }
 
         [HttpPost]
-        public void Post(CaseFile caseFile)
+        public void Add(CaseFile caseFile)
         {
+            caseFile.OpenDate = DateTime.Now;
+            
             _context.CaseFiles.Add(caseFile);
             _context.SaveChanges();
         }

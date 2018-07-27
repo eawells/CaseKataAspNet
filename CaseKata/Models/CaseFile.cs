@@ -1,4 +1,6 @@
-﻿namespace CaseKata.Models
+﻿using System;
+
+namespace CaseKata.Models
 {
     public class CaseFile
     {
@@ -6,5 +8,6 @@
         public int DocketId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public DateTime OpenDate { get; set; }
     }
 }

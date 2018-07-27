@@ -1,16 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CaseKata.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CaseKata.Controllers
 {
-    [Route("api/casefile")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CaseFileController : ControllerBase
     {
-        //GET api/casefile/30
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int docketId)
+        private readonly CaseFileContext _context;
+
+        public CaseFileController(CaseFileContext context)
         {
-            return "Resource Not Found";
+            _context = context;
         }
+        
+        [HttpGet("{docketId}")]
+        public ActionResult<IList<CaseFile>> Get(int docketId)
+        {
+            var caseFiles = _context.CaseFiles
+                .Where(c => c.DocketId == docketId)
+                .ToList();
+            if (caseFiles.Count == 0)
+            {
+                return NotFound();
+            }
+            return caseFiles;
+        }
+
+        [HttpPost]
+        public void Post(CaseFile caseFile)
+        {
+            _context.CaseFiles.Add(caseFile);
+            _context.SaveChanges();
+        }
+        
+        
     }
 }

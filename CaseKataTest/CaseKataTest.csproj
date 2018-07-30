@@ -19,8 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CaseKata\CaseKata.csproj">
-      <Project>{D5AD527F-9B3B-4930-AC09-543AABCD9F6B}</Project>
-      <Name>CaseKata</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

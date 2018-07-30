@@ -64,7 +64,7 @@ namespace CaseKataTest
             casefile.DocketId = 2;
             casefile.Id = "2";
 
-            AddCaseFile(casefile);
+            await AddCaseFile(casefile);
 
             var casefiles = await RetrieveCaseFiles(casefile.DocketId);
             var endTime = DateTime.Now;

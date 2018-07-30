@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  casekata:
+    image: casekata
+    build:
+      context: .
+      dockerfile: CaseKata/Dockerfile

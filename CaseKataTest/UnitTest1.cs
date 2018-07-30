@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 
 namespace CaseKataTest
 {
+    [TestFixture]
     public class UnitTest1
     {
         private HttpClient _client;

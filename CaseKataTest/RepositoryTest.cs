@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CaseKata.Models;
 using CaseKata.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +27,18 @@ namespace CaseKataTest
         [Test]
         public void GivenCaseItIsSaved()
         {
+            var beforeDate = DateTime.Now;
             var casefile = new CaseFile {DocketId = 1};
 
             _repository.Save(casefile);
 
             var result = _context.CaseFiles.Where(f => f.DocketId == 1).ToList();
 
+            var afterDate = DateTime.Now;
+            
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(1, result[0].DocketId);
+            Assert.IsTrue(result[0].OpenDate > beforeDate && result[0].OpenDate < afterDate);
         }
 
 
@@ -52,7 +57,7 @@ namespace CaseKataTest
 
 
         [Test]
-        public void GivenCaseExistsWhenLookForIt_ItIsNotReturned()
+        public void GivenCaseDoesNotExistWhenLookForIt_ItIsNotReturned()
         {
             var casefile = new CaseFile {DocketId = 3};
 

@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace CaseKataTest
 {
     [TestFixture]
-    public class UnitTest1
+    public class CourtAcceptanceTest
     {
         private HttpClient _client;
         private TestServer _server;
@@ -30,7 +30,7 @@ namespace CaseKataTest
         [Test]
         public async Task GivenCaseRequest_WhenCaseDoesNotExist_ThenReturnNotFound()
         {
-            var response = await _client.GetAsync("http://localhost:5000/api/casefile/30");
+            var response = await _client.GetAsync("http://localhost:1443/api/casefile/30");
             
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -70,7 +70,8 @@ namespace CaseKataTest
             var casefiles = await RetrieveCaseFiles(casefile.DocketId);
             var endTime = DateTime.Now;
             Assert.AreEqual(1, casefiles.Count);
-            Assert.IsTrue(casefiles[0].OpenDate > startTime && casefiles[0].OpenDate < endTime);
+            Assert.IsTrue(casefiles[0].OpenDate > startTime && casefiles[0].OpenDate < endTime, "OpenDate: " + 
+                                             casefiles[0].OpenDate + ", startTime: " + startTime + ", endTime: " + endTime);
         }
         
         private async Task AddCaseFile(CaseFile casefile)
@@ -78,13 +79,13 @@ namespace CaseKataTest
             var jsonCaseFile = JsonConvert.SerializeObject(casefile);
             var contentExpected = new StringContent(jsonCaseFile, Encoding.UTF8, "application/json");
 
-            var postResponse = await _client.PostAsync("http://localhost:5000/api/casefile/", contentExpected);
+            var postResponse = await _client.PostAsync("http://localhost:1443/api/casefile/", contentExpected);
             Assert.IsTrue(postResponse.IsSuccessStatusCode);
         }
         
         private async Task<IList<CaseFile>> RetrieveCaseFiles(int docketId)
         {
-            var response = await _client.GetAsync("http://localhost:5000/api/casefile/" + docketId);
+            var response = await _client.GetAsync("http://localhost:1443/api/casefile/" + docketId);
             Assert.IsTrue(response.IsSuccessStatusCode, "response code: " + response.StatusCode);
             var content = await response.Content.ReadAsStringAsync();
             var casefiles = JsonConvert.DeserializeObject<IList<CaseFile>>(content);
@@ -94,8 +95,13 @@ namespace CaseKataTest
         [TearDown]
         public void Dispose()
         {
+                       
+            var value = _client.DeleteAsync("http://localhost:1443/api/casefile/1").Result;
+            var value2 = _client.DeleteAsync("http://localhost:1443/api/casefile/2").Result;
+            
             _client.Dispose();
             _server.Dispose();
+ 
         }
     }
 }

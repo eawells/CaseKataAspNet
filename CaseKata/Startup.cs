@@ -1,4 +1,5 @@
 ﻿using CaseKata.Models;
+using CaseKata.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,10 @@ namespace CaseKata
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CaseFileContext>(opt =>
-                opt.UseInMemoryDatabase("CaseFiles"));
+                opt.UseSqlServer(@"Server=localhost;Database=master;Integrated Security=False;User Id=sa;Password=Password1$;MultipleActiveResultSets=True;"));
+            
+            services.AddTransient<Storable, Repository.Repository>();
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         
             services.AddSwaggerGen(c =>

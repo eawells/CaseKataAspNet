@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CaseKata.Models;
+using CaseKata.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaseKata.Controllers
@@ -10,35 +11,37 @@ namespace CaseKata.Controllers
     [ApiController]
     public class CaseFileController : ControllerBase
     {
-        private readonly CaseFileContext _context;
+        private readonly Storable _repository;
 
-        public CaseFileController(CaseFileContext context)
+        public CaseFileController(Storable repository)
         {
-            _context = context;
+            _repository = repository;
         }
         
         [HttpGet("{docketId}")]
         public ActionResult<IList<CaseFile>> RetrieveByDocketId(int docketId)
         {
-            var caseFiles = _context.CaseFiles
-                .Where(c => c.DocketId == docketId)
-                .ToList();
-            
-            if (caseFiles.Count == 0)
+            var result = _repository.FindByDocketId(docketId);
+
+            if (result == null)
             {
                 return NotFound();
             }
-            
-            return caseFiles;
+
+            return new List<CaseFile> {result};
         }
 
         [HttpPost]
         public void Add(CaseFile caseFile)
         {
-            caseFile.OpenDate = DateTime.Now;
+            _repository.Save(caseFile);
             
-            _context.CaseFiles.Add(caseFile);
-            _context.SaveChanges();
+        }
+
+        [HttpDelete("{docketId}")]
+        public void Remove(int docketId)
+        {
+            _repository.Delete(docketId);
         }
         
         
